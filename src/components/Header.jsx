@@ -6,6 +6,7 @@ import { MdLocationOn } from "react-icons/md";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import useOutsideClick from "../hooks/useOutsideClick";
+import { createSearchParams, useNavigate } from "react-router-dom";
 function Header() {
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
@@ -32,6 +33,18 @@ function Header() {
   const [openDate, setOpenDate] = useState(false);
   const dateRef = useRef();
   useOutsideClick(dateRef, "calender", () => setOpenDate(false));
+  const navigate=useNavigate();
+  const handleSearch = () => {
+    const encodedParams= createSearchParams({
+       date: JSON.stringify(date),
+       destination,
+       options: JSON.stringify(options),
+     });
+     navigate({
+         pathname:"/hotels",
+         search:encodedParams.toString()
+     })
+   };
   return (
     <div className="header">
       <div className="headerSearch">
@@ -87,7 +100,7 @@ function Header() {
           <span className="seperator"></span>
         </div>
         <div className="headerSearchItem">
-          <button className="headerSearchBtn">
+          <button className="headerSearchBtn" onClick={handleSearch}>
             <HiSearch className="headerIcon" />
           </button>
         </div>
