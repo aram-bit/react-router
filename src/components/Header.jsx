@@ -1,10 +1,11 @@
 import { format } from "date-fns";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DateRange } from "react-date-range";
 import { HiCalendar, HiMinus, HiPlus, HiSearch } from "react-icons/hi";
 import { MdLocationOn } from "react-icons/md";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
+import useOutsideClick from "../hooks/useOutsideClick";
 function Header() {
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
@@ -29,6 +30,8 @@ function Header() {
   ]);
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
+  const dateRef = useRef();
+  useOutsideClick(dateRef, "calender", () => setOpenDate(false));
   return (
     <div className="header">
       <div className="headerSearch">
@@ -45,7 +48,7 @@ function Header() {
           />
           <span className="seperator"></span>
         </div>
-        <div className="headerSearchItem">
+        <div className="headerSearchItem" ref={dateRef}>
           <HiCalendar className="headerIcon dateIcon" />
           <div
             className="dateDropDown"
@@ -94,9 +97,11 @@ function Header() {
 }
 
 export default Header;
-function GuestOptionList({ options, handleOptions }) {
+function GuestOptionList({ options, handleOptions, setOpenOptions }) {
+  const optionsRef = useRef();
+  useOutsideClick(optionsRef, "optionDropDown", () => setOpenOptions(false));
   return (
-    <div className="guestOptions">
+    <div className="guestOptions" ref={optionsRef}>
       <OptionItem
         type="adult"
         minLimit={1}
