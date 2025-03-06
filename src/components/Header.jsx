@@ -6,7 +6,7 @@ import { MdLocationOn } from "react-icons/md";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import useOutsideClick from "../hooks/useOutsideClick";
-import { createSearchParams, useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 function Header() {
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
@@ -31,6 +31,7 @@ function Header() {
   ]);
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
+  const[searchParams,setSearchParams]=useSearchParams();
   const dateRef = useRef();
   useOutsideClick(dateRef, "calender", () => setOpenDate(false));
   const navigate=useNavigate();
