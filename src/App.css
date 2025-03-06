@@ -1,3 +1,5 @@
+@import 'leaflet/dist/leaflet.css';
+
 .header {
   display: flex;
   justify-content: center;
@@ -228,4 +230,29 @@ flex-direction: row;
   width: 35%;
   overflow-y: scroll;
   padding-right: 1rem;
+}
+/* map */
+
+.mapContainer {
+  flex: 1;
+  background-color: var(--text-100);
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+.mapContainer button.getLocation {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background-color: var(--primary-600);
+  box-shadow: 0 0 10px var(--primary-600);
+  color: #fff;
+  z-index: 1000;
+}
+.map {
+  /* height: 100%; */
 }
