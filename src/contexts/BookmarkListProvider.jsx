@@ -11,6 +11,7 @@ function BookmarkListProvider({ children }) {
   const { isLoading, data: bookmarks } = useFetch(`${BASE_URL}/bookmarks`);
   async function getBookmark(id) {
     setIsLoadingCurrBookmark(true);
+    setCurrBookmark(null);
     try {
       const { data } = await axios.get(`${BASE_URL}/bookmarks/${id}`);
       setCurrBookmark(data);
