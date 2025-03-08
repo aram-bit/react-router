@@ -10,10 +10,10 @@ import {
 import { useHotels } from "../contexts/HotelsProvider";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useGeoLocation from "../hooks/useGeoLocation";
+import Loader from "./Loader";
 
-function Map() {
+function Map({ markerLocations }) {
   const [mapCenter, setMapCenter] = useState([52.3, 4.8]);
-  const { isLoading, hotels } = useHotels();
   const [searchParams, setSearchParams] = useSearchParams();
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
@@ -46,7 +46,7 @@ function Map() {
         />
         <DetectClick />
         <ChangeCenter position={mapCenter} />
-        {hotels.map((item) => (
+        {markerLocations.map((item) => (
           <Marker key={item.id} position={[item.latitude, item.longitude]}>
             <Popup>{item.host_location}</Popup>
           </Marker>
