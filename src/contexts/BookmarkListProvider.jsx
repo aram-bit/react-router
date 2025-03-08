@@ -21,6 +21,19 @@ function BookmarkListProvider({ children }) {
       setIsLoadingCurrBookmark(false);
     }
   }
+  async function createBookmark(newBookmark) {
+    setIsLoadingCurrBookmark(true);
+    try {
+      const { data } = await axios.post(`${BASE_URL}/bookmarks/`, newBookmark);
+      console.log(data);
+
+      setCurrBookmark(data);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsLoadingCurrBookmark(false);
+    }
+  }
   return (
     <BookmarkContext.Provider
       value={{
@@ -29,6 +42,7 @@ function BookmarkListProvider({ children }) {
         getBookmark,
         isLoadingCurrBookmark,
         currBookmark,
+        createBookmark,
       }}
     >
       {children}
