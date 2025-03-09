@@ -6,7 +6,7 @@ import { MdLocationOn } from "react-icons/md";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import useOutsideClick from "../hooks/useOutsideClick";
-import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
+import { createSearchParams, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 function Header() {
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
@@ -48,6 +48,7 @@ function Header() {
    };
   return (
     <div className="header">
+            <NavLink to="/bookmark">Bookmarks</NavLink>
       <div className="headerSearch">
         <div className="headerSearchItem">
           <MdLocationOn className="headerIcon locationIcon" />
@@ -106,6 +107,8 @@ function Header() {
           </button>
         </div>
       </div>
+            <button className="btn btn--primary">login</button>
+
     </div>
   );
 }
