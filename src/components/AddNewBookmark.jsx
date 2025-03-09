@@ -16,8 +16,9 @@ function AddNewBookmark() {
   const [countryCode, setCountryCode] = useState("");
   const [isLoadingGeoCoding, setIsLoadingGeoCoding] = useState(false);
   const [geoCodingError, setGeoCodingError] = useState(null);
-  if (!lat || !lng) return;
+  const { createBookmark } = useBookmark();
   useEffect(() => {
+    if (!lat || !lng) return;
     async function fetchLocationData() {
       setIsLoadingGeoCoding(true);
       setIsLoadingGeoCoding(null);
@@ -37,7 +38,6 @@ function AddNewBookmark() {
     }
     fetchLocationData();
   }, [lat, lng]);
-  const { createBookmark } = useBookmark();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!cityName || !country) return;

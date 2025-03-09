@@ -1,72 +1,131 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
-const BASE_URL = "http://localhost:5000";
 const BookmarkContext = createContext();
+const BASE_URL = "http://localhost:5000";
+
+const initialState = {
+  bookmarks: [],
+  isLoading: false,
+  currBookmark: null,
+  error: null,
+};
+
+function bookmarkReducer(state, action) {
+  switch (action.type) {
+    case "loading":
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case "bookmarks/loaded":
+      return {
+        ...state,
+        isLoading: false,
+        bookmarks: action.payload,
+      };
+    case "bookmark/loaded":
+      return {
+        ...state,
+        isLoading: false,
+        currBookmark: action.payload,
+      };
+    case "bookmark/created":
+      return {
+        ...state,
+        isLoading: false,
+        bookmarks: [...state.bookmarks, action.payload],
+        currBookmark: action.payload,
+      };
+    case "bookmark/deleted":
+      return {
+        ...state,
+        isLoading: false,
+        bookmarks: state.bookmarks.filter((item) => item.id !== action.payload),
+        currBookmark: null,
+      };
+    case "rejected":
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+    default:
+      throw new Error("Unknown action");
+  }
+}
+
+// 1. pending, 2. success ,3. rejected
+
 function BookmarkListProvider({ children }) {
-  const [currBookmark, setCurrBookmark] = useState(null);
-  const [isLoadingCurrBookmark, setIsLoadingCurrBookmark] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [bookmarks, setBookmarks] = useState({});
+  const [{ bookmarks, isLoading, currBookmark }, dispatch] = useReducer(
+    bookmarkReducer,
+    initialState
+  );
+
   useEffect(() => {
     async function fetchBookmarkList() {
-      setIsLoading(true);
+      dispatch({ type: "loading" });
       try {
         const { data } = await axios.get(`${BASE_URL}/bookmarks`);
-        setBookmarks(data);
-        setIsLoadingCurrBookmark(false);
+        dispatch({ type: "bookmarks/loaded", payload: data });
       } catch (error) {
         toast.error(error.message);
-      } finally {
-        setIsLoading(false);
+        dispatch({
+          type: "rejected",
+          payload: "an Errror occurred in loading bookmarks",
+        });
       }
     }
     fetchBookmarkList();
   }, []);
+
   async function getBookmark(id) {
-    setIsLoadingCurrBookmark(true);
-    setCurrBookmark(null);
+    if (Number(id) === currBookmark?.id) return;
+
+    dispatch({ type: "loading" });
     try {
       const { data } = await axios.get(`${BASE_URL}/bookmarks/${id}`);
-      setCurrBookmark(data);
-      setIsLoadingCurrBookmark(false);
+      dispatch({ type: "bookmark/loaded", payload: data });
     } catch (error) {
       toast.error(error.message);
-      setIsLoadingCurrBookmark(false);
+      dispatch({
+        type: "rejected",
+        payload: "an Error occurred in fetching single bookmark",
+      });
     }
   }
+
   async function createBookmark(newBookmark) {
-    setIsLoadingCurrBookmark(true);
+    dispatch({ type: "loading" });
     try {
       const { data } = await axios.post(`${BASE_URL}/bookmarks/`, newBookmark);
-      setBookmarks((prev) => [...prev, data]);
-      setCurrBookmark(data);
+      dispatch({ type: "bookmark/created", payload: data });
     } catch (error) {
       toast.error(error.message);
-    } finally {
-      setIsLoading(false);
+      dispatch({ type: "rejected", payload: error.message });
     }
   }
+
   async function deleteBookmark(id) {
-    setIsLoadingCurrBookmark(true);
+    dispatch({ type: "loading" });
     try {
       await axios.delete(`${BASE_URL}/bookmarks/${id}`);
-      setBookmarks((prev) => prev.filter((item) => item.id !== id));
+      dispatch({ type: "bookmark/deleted", payload: id });
     } catch (error) {
       toast.error(error.message);
-    } finally {
-      setIsLoadingCurrBookmark(false);
+      dispatch({ type: "rejected", payload: error.message });
     }
   }
+
   return (
     <BookmarkContext.Provider
       value={{
         isLoading,
         bookmarks,
-        getBookmark,
-        isLoadingCurrBookmark,
         currBookmark,
+        getBookmark,
         createBookmark,
         deleteBookmark,
       }}
@@ -75,8 +134,8 @@ function BookmarkListProvider({ children }) {
     </BookmarkContext.Provider>
   );
 }
-
 export default BookmarkListProvider;
+
 export function useBookmark() {
   return useContext(BookmarkContext);
 }

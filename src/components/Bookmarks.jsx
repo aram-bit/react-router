@@ -1,9 +1,9 @@
 import React from "react";
-import { useBookmark } from "../contexts/BookmarkListProvider";
 import Loader from "./Loader";
 import ReactCountryFlag from "react-country-flag";
 import { Link } from "react-router-dom";
 import { HiTrash } from "react-icons/hi";
+import { useBookmark } from "../contexts/BookmarkListProvider";
 
 function Bookmarks() {
   const { isLoading, bookmarks, currBookmark, deleteBookmark } = useBookmark();
@@ -12,10 +12,11 @@ function Bookmarks() {
     await deleteBookmark(id);
   };
   if (isLoading) return <Loader />;
-  if(!bookmarks.length) return (<p> there is not any bookmark</p>)
+  if (!bookmarks.length) return <p> there is not any bookmark</p>;
   return (
     <div>
-      <h2>Bookmarks list</h2>
+      <h2>BookmarkList</h2>
+
       <div className="bookmarkList">
         {bookmarks.map((item) => {
           return (
@@ -29,9 +30,8 @@ function Bookmarks() {
                 }`}
               >
                 <div>
-                  {" "}
                   <ReactCountryFlag svg countryCode={item.countryCode} />
-                  &nbsp;<strong>{item.cityName}</strong> &nbsp;
+                  &nbsp; <strong>{item.cityName}</strong> &nbsp;
                   <span>{item.country}</span>
                 </div>
                 <button onClick={(e) => handleDelete(e, item.id)}>
