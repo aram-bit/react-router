@@ -48,7 +48,17 @@ function BookmarkListProvider({ children }) {
       setIsLoading(false);
     }
   }
-
+  async function deleteBookmark(id) {
+    setIsLoadingCurrBookmark(true);
+    try {
+      await axios.delete(`${BASE_URL}/bookmarks/${id}`);
+      setBookmarks((prev) => prev.filter((item) => item.id !== id));
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsLoadingCurrBookmark(false);
+    }
+  }
   return (
     <BookmarkContext.Provider
       value={{
@@ -58,6 +68,7 @@ function BookmarkListProvider({ children }) {
         isLoadingCurrBookmark,
         currBookmark,
         createBookmark,
+        deleteBookmark,
       }}
     >
       {children}

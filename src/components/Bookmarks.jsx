@@ -6,9 +6,13 @@ import { Link } from "react-router-dom";
 import { HiTrash } from "react-icons/hi";
 
 function Bookmarks() {
-  const { isLoading, bookmarks, currBookmark } = useBookmark();
-
+  const { isLoading, bookmarks, currBookmark, deleteBookmark } = useBookmark();
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    await deleteBookmark(id);
+  };
   if (isLoading) return <Loader />;
+  if(!bookmarks.length) return (<p> there is not any bookmark</p>)
   return (
     <div>
       <h2>Bookmarks list</h2>
@@ -30,7 +34,7 @@ function Bookmarks() {
                   &nbsp;<strong>{item.cityName}</strong> &nbsp;
                   <span>{item.country}</span>
                 </div>
-                <button>
+                <button onClick={(e) => handleDelete(e, item.id)}>
                   <HiTrash className="trash" />
                 </button>
               </div>
