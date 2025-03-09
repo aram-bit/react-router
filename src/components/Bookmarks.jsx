@@ -3,9 +3,11 @@ import { useBookmark } from "../contexts/BookmarkListProvider";
 import Loader from "./Loader";
 import ReactCountryFlag from "react-country-flag";
 import { Link } from "react-router-dom";
+import { HiTrash } from "react-icons/hi";
 
 function Bookmarks() {
   const { isLoading, bookmarks, currBookmark } = useBookmark();
+
   if (isLoading) return <Loader />;
   return (
     <div>
@@ -22,9 +24,15 @@ function Bookmarks() {
                   item.id === currBookmark?.id ? "current-bookmark" : ""
                 }`}
               >
-                <ReactCountryFlag svg countryCode={item.countryCode} />
-                &nbsp;<strong>{item.cityName}</strong> &nbsp;
-                <span>{item.country}</span>
+                <div>
+                  {" "}
+                  <ReactCountryFlag svg countryCode={item.countryCode} />
+                  &nbsp;<strong>{item.cityName}</strong> &nbsp;
+                  <span>{item.country}</span>
+                </div>
+                <button>
+                  <HiTrash className="trash" />
+                </button>
               </div>
             </Link>
           );
