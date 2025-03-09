@@ -1,12 +1,24 @@
 import { format } from "date-fns";
 import { useRef, useState } from "react";
 import { DateRange } from "react-date-range";
-import { HiCalendar, HiMinus, HiPlus, HiSearch } from "react-icons/hi";
+import {
+  HiCalendar,
+  HiLogout,
+  HiMinus,
+  HiPlus,
+  HiSearch,
+} from "react-icons/hi";
 import { MdLocationOn } from "react-icons/md";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import useOutsideClick from "../hooks/useOutsideClick";
-import { createSearchParams, NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  createSearchParams,
+  NavLink,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import { useAuth } from "../contexts/AuthProvider";
 function Header() {
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState({
@@ -31,24 +43,25 @@ function Header() {
   ]);
   const [destination, setDestination] = useState("");
   const [openDate, setOpenDate] = useState(false);
-  const[searchParams,setSearchParams]=useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const dateRef = useRef();
   useOutsideClick(dateRef, "calender", () => setOpenDate(false));
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const handleSearch = () => {
-    const encodedParams= createSearchParams({
-       date: JSON.stringify(date),
-       destination,
-       options: JSON.stringify(options),
-     });
-     navigate({
-         pathname:"/hotels",
-         search:encodedParams.toString()
-     })
-   };
+    const encodedParams = createSearchParams({
+      date: JSON.stringify(date),
+      destination,
+      options: JSON.stringify(options),
+    });
+    navigate({
+      pathname: "/hotels",
+      search: encodedParams.toString(),
+    });
+  };
+
   return (
     <div className="header">
-            <NavLink to="/bookmark">Bookmarks</NavLink>
+      <NavLink to="/bookmark">Bookmarks</NavLink>
       <div className="headerSearch">
         <div className="headerSearchItem">
           <MdLocationOn className="headerIcon locationIcon" />
@@ -107,8 +120,7 @@ function Header() {
           </button>
         </div>
       </div>
-            <button className="btn btn--primary">login</button>
-
+      <User/>
     </div>
   );
 }
@@ -161,6 +173,31 @@ function OptionItem({ type, options, minLimit, handleOptions }) {
           <HiPlus className=" icon" />
         </button>
       </div>
+    </div>
+  );
+}
+function User() {
+  const { user, isAuthenticated, login, logout } = useAuth();
+  const navigate=useNavigate();
+  const handleLogout=()=>{
+    logout();
+    navigate("/")
+  }
+  return (
+    <div>
+      {" "}
+      {isAuthenticated ? (
+        <div>
+          <span>{user.name}</span>
+          <button>
+            <HiLogout className="icon" onClick={handleLogout} />
+          </button>
+        </div>
+      ) : (
+        <NavLink to="/login" className="btn btn--primary">
+          login
+        </NavLink>
+      )}
     </div>
   );
 }
