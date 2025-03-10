@@ -15,6 +15,7 @@ import AddNewBookmark from "./components/AddNewBookmark";
 import AuthContextProvider from "./contexts/AuthProvider";
 import { Toaster } from "react-hot-toast";
 import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <AuthContextProvider>
@@ -29,7 +30,7 @@ function App() {
               <Route index element={<Hotels />} />
               <Route path=":id" element={<SingleHotel />} />
             </Route>
-            <Route path="/bookmarks" element={<BookmarkLayout />}>
+            <Route path="/bookmarks" element={<ProtectedRoute><BookmarkLayout /></ProtectedRoute>}>
               <Route index element={<Bookmarks />} />
               <Route path="add" element={<AddNewBookmark />} />
               <Route path=":id" element={<SingleBookmark />} />

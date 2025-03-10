@@ -61,7 +61,7 @@ function Header() {
 
   return (
     <div className="header">
-      <NavLink to="/bookmark">Bookmarks</NavLink>
+      <NavLink to="/bookmarks">Bookmarks</NavLink>
       <div className="headerSearch">
         <div className="headerSearchItem">
           <MdLocationOn className="headerIcon locationIcon" />
